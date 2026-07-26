@@ -17,6 +17,15 @@ export const imageUploadPreset = defineUploadPreset({
 });
 
 /**
+ * Ready-to-use policy for every image format supporting transparency (alpha channel).
+ * Each image may occupy up to 20 MiB while collection capacity remains unrestricted.
+ */
+export const imageTransparentUploadPreset = defineUploadPreset({
+  formats: [fileFormat.PNG, fileFormat.WEBP, fileFormat.SVG],
+  maxFileSize: DEFAULT_UPLOAD_MAX_FILE_SIZE,
+});
+
+/**
  * Ready-to-use policy for every document format supported by the upload catalog.
  * Each document may occupy up to 20 MiB while collection capacity remains unrestricted.
  */
