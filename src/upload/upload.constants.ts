@@ -19,6 +19,7 @@ export const fileFormatsConfig = {
   // Image formats.
   [fileFormatsRecord.PNG]: { name: 'PNG', mimeTypes: ['image/png'], extensions: ['.png'] },
   [fileFormatsRecord.JPG]: { name: 'JPG', mimeTypes: ['image/jpeg'], extensions: ['.jpg', '.jpeg'] },
+  [fileFormatsRecord.SVG]: { name: 'SVG', mimeTypes: ['image/svg+xml'], extensions: ['.svg'] },
   [fileFormatsRecord.WEBP]: { name: 'WEBP', mimeTypes: ['image/webp'], extensions: ['.webp'] },
   [fileFormatsRecord.AVIF]: { name: 'AVIF', mimeTypes: ['image/avif'], extensions: ['.avif'] },
   [fileFormatsRecord.HEIC]: { name: 'HEIC', mimeTypes: ['image/heic', 'image/heif'], extensions: ['.heic', '.heif'] },

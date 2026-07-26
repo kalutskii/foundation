@@ -48,7 +48,7 @@ type IsExact<Actual, Expected> =
 type Assert<Condition extends true> = Condition;
 
 type _FileFormatContract = Assert<
-  IsExact<FileFormat, 'png' | 'jpg' | 'webp' | 'avif' | 'heic' | 'pdf' | 'rtf' | 'txt'>
+  IsExact<FileFormat, 'png' | 'jpg' | 'webp' | 'avif' | 'heic' | 'svg' | 'pdf' | 'rtf' | 'txt'>
 >;
 type _ValidationErrorContract = Assert<
   IsExact<

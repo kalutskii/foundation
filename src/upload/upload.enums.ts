@@ -3,10 +3,10 @@ import { createStringEnumRecord } from '@/utilities/enums.utilities';
 // `Upload` enumerations define supported format and validation error collections;
 // Derived unions and records preserve one literal source for every public alias;
 
-// == FILE FORMATS =====================================================================================================
+// == FILE FORMATS ======================================================================
 
 export const fileFormatsArray = [
-  ...['png', 'jpg', 'webp', 'avif', 'heic'], // Image formats.
+  ...['png', 'jpg', 'webp', 'avif', 'heic', 'svg'], // Image formats.
   ...['pdf', 'rtf', 'txt'], // Text and document formats.
 ] as const;
 
@@ -18,7 +18,7 @@ export type FileFormat = (typeof fileFormatsArray)[number];
 export const fileFormatsRecord = createStringEnumRecord(fileFormatsArray);
 export const fileFormat = fileFormatsRecord;
 
-// == VALIDATION ERRORS =================================================================================================
+// == VALIDATION ERRORS =================================================================
 
 export const uploadValidationErrorsArray = [
   'empty_file',
