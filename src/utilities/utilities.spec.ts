@@ -4,6 +4,7 @@ import { enUS } from 'date-fns/locale';
 import {
   type MeasuredExecution,
   type ReplaceDotsWithUnderscores,
+  type ReplaceHyphensWithUnderscores,
   type Simplify,
   type StringEnumRecord,
   createStringEnumRecord,
@@ -42,10 +43,14 @@ type _ReplaceDotsContract = Assert<
   IsExact<ReplaceDotsWithUnderscores<'foundation.utilities.deep.value'>, 'foundation_utilities_deep_value'>
 >;
 type _ReplaceDotsWithoutDotsContract = Assert<IsExact<ReplaceDotsWithUnderscores<'unchanged'>, 'unchanged'>>;
+type _ReplaceHyphensContract = Assert<
+  IsExact<ReplaceHyphensWithUnderscores<'foundation-utilities-deep-value'>, 'foundation_utilities_deep_value'>
+>;
+type _ReplaceHyphensWithoutHyphensContract = Assert<IsExact<ReplaceHyphensWithUnderscores<'unchanged'>, 'unchanged'>>;
 type _StringEnumRecordContract = Assert<
   IsExact<
     StringEnumRecord<readonly ['user.active', 'pending-review']>,
-    Readonly<{ 'USER_ACTIVE': 'user.active'; 'PENDING-REVIEW': 'pending-review' }>
+    Readonly<{ USER_ACTIVE: 'user.active'; PENDING_REVIEW: 'pending-review' }>
   >
 >;
 type _SimplifyContract = Assert<
@@ -60,14 +65,14 @@ type _MeasuredExecutionContract = Assert<
 // =====================================================================================================================
 
 describe('createStringEnumRecord', () => {
-  test('normalizes every dot, uppercases keys, and preserves literal values', () => {
+  test('normalizes dots and hyphens, uppercases keys, and preserves literal values', () => {
     const statuses = createStringEnumRecord(['draft', 'review.in.progress', 'published-value'] as const);
 
-    // Only dots have separator semantics. Other punctuation remains part of the public enum-like key.
+    // Dots and hyphens share separator semantics while source literals remain unchanged as record values.
     expect(statuses).toEqual({
-      'DRAFT': 'draft',
-      'REVIEW_IN_PROGRESS': 'review.in.progress',
-      'PUBLISHED-VALUE': 'published-value',
+      DRAFT: 'draft',
+      REVIEW_IN_PROGRESS: 'review.in.progress',
+      PUBLISHED_VALUE: 'published-value',
     });
   });
 
