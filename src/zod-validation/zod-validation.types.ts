@@ -1,20 +1,22 @@
 import type { Simplify } from '@/utilities/type.utilities';
 
-// All primitive types that can be directly serialized to query parameters.
-type QueryPrimitive = string | number | boolean | bigint | Date;
+// Values with no traversable payload structure are serialized directly to strings;
+// `Date` is included explicitly because its object shape must not become mapped fields;
+
+type StringifiablePayloadValue = string | number | boolean | bigint | Date;
 
 /**
- * Recursively transforms all fields of T to `string`, matching how query parameters are serialized.
- * Handles nested objects, arrays, and primitive values (including null and undefined as optional).
+ * Recursively transforms payload values to strings while preserving container structure.
+ * Nullable and omitted members remain unchanged for transport-layer omission handling.
  */
-export type AsQuery<T> = T extends null | undefined
-  ? T
-  : T extends QueryPrimitive
+export type StringifiedPayload<TValue> = TValue extends null | undefined
+  ? TValue
+  : TValue extends StringifiablePayloadValue
     ? string
-    : T extends readonly (infer Item)[]
-      ? AsQuery<Item>[]
-      : T extends object
-        ? { [Key in keyof T]: AsQuery<T[Key]> }
+    : TValue extends readonly (infer TItem)[]
+      ? StringifiedPayload<TItem>[]
+      : TValue extends object
+        ? { [TKey in keyof TValue]: StringifiedPayload<TValue[TKey]> }
         : string;
 
 /**

@@ -2,12 +2,12 @@ import { describe, expect, test } from 'bun:test';
 import { z } from 'zod';
 
 import {
-  type AsQuery,
   type AtLeastOne,
+  type StringifiedPayload,
   asQuery,
   isPlainObject,
   parseQueryValue,
-  preprocessTransportPayload,
+  stringifyPayloadValues,
   zodAtLeastOne,
 } from '@/index';
 
@@ -40,9 +40,9 @@ type QuerySource = {
   nested?: { label: string | null; score: number };
 };
 
-type _AsQueryContract = Assert<
+type _StringifiedPayloadContract = Assert<
   IsExact<
-    AsQuery<QuerySource>,
+    StringifiedPayload<QuerySource>,
     {
       page: string;
       enabled: string;
@@ -52,11 +52,11 @@ type _AsQueryContract = Assert<
     }
   >
 >;
-type _AsQueryPrimitiveContract = Assert<IsExact<AsQuery<symbol>, string>>;
+type _StringifiedPayloadPrimitiveContract = Assert<IsExact<StringifiedPayload<symbol>, string>>;
 
-const _preprocessedTransportPayload = preprocessTransportPayload({ page: 2, enabled: true } as const);
-type _PreprocessedTransportPayloadContract = Assert<
-  IsExact<typeof _preprocessedTransportPayload, { readonly page: string; readonly enabled: string }>
+const _stringifiedPayload = stringifyPayloadValues({ page: 2, enabled: true } as const);
+type _StringifiedPayloadValueContract = Assert<
+  IsExact<typeof _stringifiedPayload, { readonly page: string; readonly enabled: string }>
 >;
 
 type Patch = { name?: string; count?: number; enabled?: boolean };
@@ -170,7 +170,7 @@ describe('parseQueryValue', () => {
 // RECURSIVE QUERY PAYLOAD PREPROCESSING
 // =====================================================================================================================
 
-describe('preprocessTransportPayload', () => {
+describe('stringifyPayloadValues', () => {
   test('recursively converts primitive values while preserving object and array structure', () => {
     const source = {
       page: 2,
@@ -179,7 +179,7 @@ describe('preprocessTransportPayload', () => {
       identifiers: [10n, 20n],
     };
 
-    expect(preprocessTransportPayload(source)).toEqual({
+    expect(stringifyPayloadValues(source)).toEqual({
       page: '2',
       enabled: 'false',
       filters: { minimum: '-3.5', label: 'foundation' },
@@ -198,7 +198,7 @@ describe('preprocessTransportPayload', () => {
   test('preserves nullable and omitted values while stringifying native object instances', () => {
     const date = new Date('2024-01-02T00:00:00.000Z');
 
-    expect(preprocessTransportPayload({ nullable: null, omitted: undefined, date })).toEqual({
+    expect(stringifyPayloadValues({ nullable: null, omitted: undefined, date })).toEqual({
       nullable: null,
       omitted: undefined,
       date: String(date),

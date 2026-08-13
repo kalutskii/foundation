@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { AsQuery } from './zod-validation.types';
+import type { StringifiedPayload } from './zod-validation.types';
 import { isPlainObject } from './zod-validation.utilities';
 
 export const parseQueryValue = (value: unknown): unknown => {
@@ -43,31 +43,31 @@ export const parseQueryValue = (value: unknown): unknown => {
 export const asQuery = <T extends z.ZodTypeAny>(schema: T) => z.preprocess(parseQueryValue, schema);
 
 /**
- * Recursively converts a domain payload into its string-based query representation.
- * Objects and arrays are copied while `null` and `undefined` retain their omission semantics.
+ * Recursively converts payload values to strings without changing container structure.
+ * Objects and arrays are copied while `null` and `undefined` retain omission semantics.
  *
  * @example
- * preprocessTransportPayload({ page: 2, enabled: true });
+ * stringifyPayloadValues({ page: 2, enabled: true });
  * // { page: '2', enabled: 'true' }
  */
-export function preprocessTransportPayload<TValue>(value: TValue): AsQuery<TValue> {
+export function stringifyPayloadValues<TValue>(value: TValue): StringifiedPayload<TValue> {
   if (Array.isArray(value)) {
-    return value.map(preprocessTransportPayload) as AsQuery<TValue>;
+    return value.map(stringifyPayloadValues) as StringifiedPayload<TValue>;
   }
 
   if (isPlainObject(value)) {
     const entries = Object.entries(value).map(([key, entryValue]) => {
-      return [key, preprocessTransportPayload(entryValue)];
+      return [key, stringifyPayloadValues(entryValue)];
     });
 
     // TypeScript cannot connect recursive mapped types with runtime plain-object detection;
-    // Every reconstructed property follows `AsQuery`, so the assertion preserves that contract;
+    // Every reconstructed property follows `StringifiedPayload`, preserving that contract;
 
-    return Object.fromEntries(entries) as AsQuery<TValue>;
+    return Object.fromEntries(entries) as StringifiedPayload<TValue>;
   }
 
-  // Nullish values are preserved to allow optional query parameters to be omitted from the request.
-  if (value === null || value === undefined) return value as AsQuery<TValue>;
+  // Nullish values remain distinct so transport adapters can omit or encode them explicitly.
+  if (value === null || value === undefined) return value as StringifiedPayload<TValue>;
 
-  return String(value) as AsQuery<TValue>;
+  return String(value) as StringifiedPayload<TValue>;
 }
