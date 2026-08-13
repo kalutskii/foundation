@@ -47,17 +47,17 @@ export const asQuery = <T extends z.ZodTypeAny>(schema: T) => z.preprocess(parse
  * Objects and arrays are copied while `null` and `undefined` retain their omission semantics.
  *
  * @example
- * preprocessQueryPayload({ page: 2, enabled: true });
+ * preprocessTransportPayload({ page: 2, enabled: true });
  * // { page: '2', enabled: 'true' }
  */
-export function preprocessQueryPayload<TValue>(value: TValue): AsQuery<TValue> {
+export function preprocessTransportPayload<TValue>(value: TValue): AsQuery<TValue> {
   if (Array.isArray(value)) {
-    return value.map(preprocessQueryPayload) as AsQuery<TValue>;
+    return value.map(preprocessTransportPayload) as AsQuery<TValue>;
   }
 
   if (isPlainObject(value)) {
     const entries = Object.entries(value).map(([key, entryValue]) => {
-      return [key, preprocessQueryPayload(entryValue)];
+      return [key, preprocessTransportPayload(entryValue)];
     });
 
     // TypeScript cannot connect recursive mapped types with runtime plain-object detection;

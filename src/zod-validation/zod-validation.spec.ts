@@ -7,7 +7,7 @@ import {
   asQuery,
   isPlainObject,
   parseQueryValue,
-  preprocessQueryPayload,
+  preprocessTransportPayload,
   zodAtLeastOne,
 } from '@/index';
 
@@ -54,9 +54,9 @@ type _AsQueryContract = Assert<
 >;
 type _AsQueryPrimitiveContract = Assert<IsExact<AsQuery<symbol>, string>>;
 
-const _preprocessedQueryPayload = preprocessQueryPayload({ page: 2, enabled: true } as const);
-type _PreprocessedQueryPayloadContract = Assert<
-  IsExact<typeof _preprocessedQueryPayload, { readonly page: string; readonly enabled: string }>
+const _preprocessedTransportPayload = preprocessTransportPayload({ page: 2, enabled: true } as const);
+type _PreprocessedTransportPayloadContract = Assert<
+  IsExact<typeof _preprocessedTransportPayload, { readonly page: string; readonly enabled: string }>
 >;
 
 type Patch = { name?: string; count?: number; enabled?: boolean };
@@ -170,7 +170,7 @@ describe('parseQueryValue', () => {
 // RECURSIVE QUERY PAYLOAD PREPROCESSING
 // =====================================================================================================================
 
-describe('preprocessQueryPayload', () => {
+describe('preprocessTransportPayload', () => {
   test('recursively converts primitive values while preserving object and array structure', () => {
     const source = {
       page: 2,
@@ -179,7 +179,7 @@ describe('preprocessQueryPayload', () => {
       identifiers: [10n, 20n],
     };
 
-    expect(preprocessQueryPayload(source)).toEqual({
+    expect(preprocessTransportPayload(source)).toEqual({
       page: '2',
       enabled: 'false',
       filters: { minimum: '-3.5', label: 'foundation' },
@@ -198,7 +198,7 @@ describe('preprocessQueryPayload', () => {
   test('preserves nullable and omitted values while stringifying native object instances', () => {
     const date = new Date('2024-01-02T00:00:00.000Z');
 
-    expect(preprocessQueryPayload({ nullable: null, omitted: undefined, date })).toEqual({
+    expect(preprocessTransportPayload({ nullable: null, omitted: undefined, date })).toEqual({
       nullable: null,
       omitted: undefined,
       date: String(date),
