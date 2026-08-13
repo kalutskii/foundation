@@ -1,7 +1,15 @@
 import { describe, expect, test } from 'bun:test';
 import { z } from 'zod';
 
-import { type AsQuery, type AtLeastOne, asQuery, isPlainObject, parseQueryValue, zodAtLeastOne } from '@/index';
+import {
+  type AsQuery,
+  type AtLeastOne,
+  asQuery,
+  isPlainObject,
+  parseQueryValue,
+  preprocessQueryPayload,
+  zodAtLeastOne,
+} from '@/index';
 
 // =====================================================================================================================
 // COMPILE-TIME CONTRACT SUPPORT
@@ -45,6 +53,11 @@ type _AsQueryContract = Assert<
   >
 >;
 type _AsQueryPrimitiveContract = Assert<IsExact<AsQuery<symbol>, string>>;
+
+const _preprocessedQueryPayload = preprocessQueryPayload({ page: 2, enabled: true } as const);
+type _PreprocessedQueryPayloadContract = Assert<
+  IsExact<typeof _preprocessedQueryPayload, { readonly page: string; readonly enabled: string }>
+>;
 
 type Patch = { name?: string; count?: number; enabled?: boolean };
 
@@ -150,6 +163,46 @@ describe('parseQueryValue', () => {
     const values = [null, undefined, 12, false, 10n, date] as const;
 
     for (const value of values) expect(parseQueryValue(value)).toBe(value);
+  });
+});
+
+// =====================================================================================================================
+// RECURSIVE QUERY PAYLOAD PREPROCESSING
+// =====================================================================================================================
+
+describe('preprocessQueryPayload', () => {
+  test('recursively converts primitive values while preserving object and array structure', () => {
+    const source = {
+      page: 2,
+      enabled: false,
+      filters: { minimum: -3.5, label: 'foundation' },
+      identifiers: [10n, 20n],
+    };
+
+    expect(preprocessQueryPayload(source)).toEqual({
+      page: '2',
+      enabled: 'false',
+      filters: { minimum: '-3.5', label: 'foundation' },
+      identifiers: ['10', '20'],
+    });
+
+    // Query preprocessing reconstructs containers so callers retain their original domain payload.
+    expect(source).toEqual({
+      page: 2,
+      enabled: false,
+      filters: { minimum: -3.5, label: 'foundation' },
+      identifiers: [10n, 20n],
+    });
+  });
+
+  test('preserves nullable and omitted values while stringifying native object instances', () => {
+    const date = new Date('2024-01-02T00:00:00.000Z');
+
+    expect(preprocessQueryPayload({ nullable: null, omitted: undefined, date })).toEqual({
+      nullable: null,
+      omitted: undefined,
+      date: String(date),
+    });
   });
 });
 

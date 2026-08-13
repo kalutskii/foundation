@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+import type { AsQuery } from './zod-validation.types';
 import { isPlainObject } from './zod-validation.utilities';
 
 export const parseQueryValue = (value: unknown): unknown => {
@@ -40,3 +41,33 @@ export const parseQueryValue = (value: unknown): unknown => {
  * // { page: 2, isActive: true }
  */
 export const asQuery = <T extends z.ZodTypeAny>(schema: T) => z.preprocess(parseQueryValue, schema);
+
+/**
+ * Recursively converts a domain payload into its string-based query representation.
+ * Objects and arrays are copied while `null` and `undefined` retain their omission semantics.
+ *
+ * @example
+ * preprocessQueryPayload({ page: 2, enabled: true });
+ * // { page: '2', enabled: 'true' }
+ */
+export function preprocessQueryPayload<TValue>(value: TValue): AsQuery<TValue> {
+  if (Array.isArray(value)) {
+    return value.map(preprocessQueryPayload) as AsQuery<TValue>;
+  }
+
+  if (isPlainObject(value)) {
+    const entries = Object.entries(value).map(([key, entryValue]) => {
+      return [key, preprocessQueryPayload(entryValue)];
+    });
+
+    // TypeScript cannot connect recursive mapped types with runtime plain-object detection;
+    // Every reconstructed property follows `AsQuery`, so the assertion preserves that contract;
+
+    return Object.fromEntries(entries) as AsQuery<TValue>;
+  }
+
+  // Nullish values are preserved to allow optional query parameters to be omitted from the request.
+  if (value === null || value === undefined) return value as AsQuery<TValue>;
+
+  return String(value) as AsQuery<TValue>;
+}
