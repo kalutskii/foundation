@@ -15,7 +15,7 @@ export const zodPaginationSchema = z.object({
    * Positive maximum number of records returned in a single result page.
    * String values are coerced to support validation of URL query input.
    */
-  limit: z.coerce.number().int().positive().default(10),
+  limit: z.coerce.number().int().positive().max(256).default(10),
 });
 
 /**
