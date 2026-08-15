@@ -29,6 +29,7 @@ The package contains several deliberately isolated areas:
 | `zod-search`     | Reusable search and pagination contracts composed from lower-level Zod primitives.        |
 | `zod-bulk`       | Include/exclude selection contracts shared by frontend and backend bulk operations.       |
 | `hono`           | Hono-specific response, file response, error handling, and request logging adapters.      |
+| `hmac`           | Web Crypto HMAC signing, verification, algorithms, and signature encoding.                |
 | `drizzle`        | Drizzle-specific SQL composition that must not leak into generic contract modules.        |
 | `zod-jwt`        | JWT service integration with optional Zod validation of decoded payloads.                 |
 
@@ -87,6 +88,7 @@ Otherwise, create a dedicated module instead of growing an unrelated file with a
 ```text
 src/
 ├── drizzle/
+├── hmac/
 ├── hono/
 ├── http/
 ├── upload/
