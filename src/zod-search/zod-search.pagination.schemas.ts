@@ -9,7 +9,7 @@ export const zodPaginationSchema = z.object({
    * Zero-based number of records skipped before collecting a result page.
    * String values are coerced to support validation of URL query input.
    */
-  offset: z.coerce.number().int().nonnegative().default(0),
+  offset: z.coerce.number().int().nonnegative().max(1_048_576).default(0),
 
   /**
    * Positive maximum number of records returned in a single result page.
