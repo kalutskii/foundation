@@ -25,6 +25,7 @@
     "test": "bun test",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
+    "lint:check": "oxlint --fix",
     "format": "oxfmt",
     "format:check": "oxfmt --check"
   },
