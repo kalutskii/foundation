@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 
-import { SQLiteSyncDialect, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
+import { SQLiteDialect, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { sqlWhere } from '@/index';
 
@@ -14,7 +14,7 @@ const usersTable = sqliteTable('users', {
   active: integer('active', { mode: 'boolean' }),
 });
 
-const sqliteDialect = new SQLiteSyncDialect();
+const sqliteDialect = new SQLiteDialect();
 
 /**
  * Compiles a where fragment into Drizzle's stable public query representation.
