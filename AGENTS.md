@@ -191,7 +191,7 @@ finishing a module-wide change:
 ```bash
 bun test src/<module>/<module>.spec.ts
 bun run typecheck
-bun run lint:check
+bun run lint
 bun run format:check
 bun run test
 bun run build

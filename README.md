@@ -312,7 +312,7 @@ bun install --frozen-lockfile
 ```bash
 bun test src/<module>/<module>.spec.ts
 bun run typecheck
-bunx eslint src/<module>
+bunx oxlint src/<module>
 ```
 
 Run focused checks first to shorten feedback loops. Do not claim a command passed unless it was actually executed

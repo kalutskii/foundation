@@ -1,0 +1,73 @@
+// Oxlint configuration – defines typed linting rules and overrides;
+// Uses `tsconfig.json` and skips generated project output files;
+// More details: https://oxc.rs/docs/guide/usage/linter/config.html;
+
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+
+  // Files and directories ignored by Oxlint.
+  "ignorePatterns": ["out/**", "build/**", "dist/**", "coverage/**", "node_modules/**"],
+
+  // Built-in rule ecosystems used by this project.
+  "plugins": ["eslint", "typescript", "oxc"],
+
+  // Enables rules that require TypeScript type information.
+  "options": { "typeAware": true },
+
+  // Enables the main recommended rule categories.
+  "categories": { "correctness": "error", "suspicious": "warn" },
+
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "rules": {
+        // Explicit boolean comparisons are used intentionally for readability.
+        "typescript/no-unnecessary-boolean-literal-compare": "off",
+
+        // Type assertions are intentionally used in generic adapters, schemas, and boundary code.
+        "typescript/no-unsafe-type-assertion": "off",
+
+        // Only allow `import type` for types; enables better tree-shaking and clarity.
+        "typescript/consistent-type-imports": [
+          "error",
+          {
+            "fixStyle": "inline-type-imports",
+            "prefer": "type-imports"
+          }
+        ],
+
+        // Remove `noUnusedLocals` and `noUnusedParameters` from `tsconfig.json` to avoid duplicate errors.
+        "typescript/no-unused-vars": [
+          "error",
+          {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+            "caughtErrorsIgnorePattern": "^_"
+          }
+        ],
+
+        // Keep explicit `any` as a warning because boundary code may require it.
+        "typescript/no-explicit-any": "warn",
+
+        // Prevent accidentally ignoring promises without handling them.
+        "typescript/no-floating-promises": "error",
+
+        // Prevent using promises in places where non-promise values are expected.
+        "typescript/no-misused-promises": "error"
+      }
+    },
+    {
+      "files": ["**/*.spec.ts"],
+      "rules": {
+        // Underscore-prefixed declarations intentionally keep compile-time contracts out of runtime APIs.
+        "eslint/no-underscore-dangle": "off",
+
+        // Exact type assertions intentionally repeat generics to compare assignability in both directions.
+        "typescript/no-unnecessary-type-parameters": "off",
+
+        // Explicit default generics verify public inference and remain part of compile-time specifications.
+        "typescript/no-unnecessary-type-arguments": "off"
+      }
+    }
+  ]
+}

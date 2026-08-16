@@ -1,0 +1,40 @@
+// Oxfmt configuration – defines formatting and import sorting rules;
+// Applies consistent project style across supported source files;
+// More details: https://oxc.rs/docs/guide/usage/formatter.html;
+
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+
+  "semi": true,
+  "trailingComma": "es5",
+  "singleQuote": true,
+  "quoteProps": "consistent",
+  "tabWidth": 2,
+  "printWidth": 120,
+  "arrowParens": "always",
+  "objectWrap": "preserve",
+
+  // Dependencies and generated output remain outside automatic formatting.
+  "ignorePatterns": ["out/**", "build/**", "dist/**", "coverage/**", "node_modules/**"],
+
+  // Import sorting
+  "sortImports": {
+    "newlinesBetween": true,
+    "sortSideEffects": true,
+
+    "customGroups": [
+      {
+        "groupName": "node-bun",
+        "selector": "import",
+        "elementNamePattern": ["node:*", "bun", "bun:*"]
+      },
+      {
+        "groupName": "alias",
+        "selector": "import",
+        "elementNamePattern": ["@/**"]
+      }
+    ],
+
+    "groups": ["node-bun", "external", "alias", ["parent", "sibling", "index"], "unknown"]
+  }
+}

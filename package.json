@@ -3,10 +3,19 @@
   "version": "0.7.20",
   "description": "Typescript collection of most common utilities, schemas and functions among private projects.",
   "license": "MIT",
-  "type": "module",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kalutskii/foundation.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
   "publishConfig": {
     "access": "public"
@@ -15,20 +24,19 @@
     "build": "tsup",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint . --ext .ts --fix",
-    "lint:check": "eslint . --ext .ts",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "lint": "oxlint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check"
   },
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
+  "devDependencies": {
+    "@types/bun": "latest",
+    "esbuild-plugin-tsconfig-paths": "^1.0.2",
+    "oxfmt": "^0.63.0",
+    "oxlint": "^1.78.0",
+    "oxlint-tsgolint": "^7.0.2001",
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3"
   },
-  "files": [
-    "dist"
-  ],
   "peerDependencies": {
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
@@ -37,17 +45,5 @@
     "kleur": "^4.1.5",
     "typescript": "^5",
     "zod": "^4.4.3"
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
-    "@types/bun": "latest",
-    "esbuild-plugin-tsconfig-paths": "^1.0.2",
-    "eslint": "^10.2.1",
-    "eslint-config-prettier": "^10.1.8",
-    "jiti": "^2.7.0",
-    "prettier": "^3.8.1",
-    "tsup": "^8.5.1",
-    "typescript-eslint": "^8.58.2"
   }
 }

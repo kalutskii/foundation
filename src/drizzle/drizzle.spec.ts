@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'bun:test';
+
 import { SQLiteSyncDialect, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 
 import { sqlWhere } from '@/index';

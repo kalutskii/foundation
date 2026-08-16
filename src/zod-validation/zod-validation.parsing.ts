@@ -9,7 +9,7 @@ export const parseQueryValue = (value: unknown): unknown => {
 
   if (Array.isArray(value)) return value.map(parseQueryValue);
   if (isPlainObject(value)) {
-    return Object.fromEntries(Object.entries(value).map(([key, value]) => [key, parseQueryValue(value)]));
+    return Object.fromEntries(Object.entries(value).map(([key, entryValue]) => [key, parseQueryValue(entryValue)]));
   }
 
   if (typeof value !== 'string') return value;
